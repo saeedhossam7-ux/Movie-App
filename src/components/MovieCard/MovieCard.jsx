@@ -1,13 +1,20 @@
 import { Link } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilm, faGlobe, faInfo, faPlay, faStar } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons/faHeart';
-import { faBookmark, faCalendar } from '@fortawesome/free-regular-svg-icons';
+import { faFilm, faGlobe, faInfo, faPlay, faStar,faHeart as faHeartSolid   } from '@fortawesome/free-solid-svg-icons';
+import {faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons/faHeart';
+import { faBookmark, faCalendar  } from '@fortawesome/free-regular-svg-icons';
 import { useEffect, useState } from 'react';
 
 
 export default function MovieCard({ movieDetails }) {
   const [trailerKey, setTrailerKey] = useState(null);
+  const [whishList, setWhishList] = useState(() => {
+  const savedState = localStorage.getItem(`wishlist_${movieDetails.id}`); 
+  return savedState ? JSON.parse(savedState) : false;
+});
+useEffect(() => {
+  localStorage.setItem(`wishlist_${movieDetails.id}`, JSON.stringify(whishList));
+}, [whishList, movieDetails.id]);
     async function trailerVideo() {
     const response = await fetch(`https://api.themoviedb.org/3/movie/${movieDetails.id}/videos?api_key=ac7e5c509c05c95a09ccc13bb434f9f4`)
     const data = await response.json()
@@ -49,10 +56,11 @@ useEffect(() => {trailerVideo() }, [])
               </a>}
               <div className="flex items-center space-x-2">
                 <button
-                  className="w-10 h-10 bg-gray-900/80 hover:bg-red-600 text-gray-200 hover:text-white border border-gray-700 rounded-full flex items-center justify-center transition-colors"
+                onClick={()=>{setWhishList(!whishList)}}
+                  className="w-10 h-10 cursor-pointer bg-gray-900/80 hover:bg-red-600 text-gray-200 hover:text-white border border-gray-700 rounded-full flex items-center justify-center transition-colors"
                   aria-label="Add to favorites"
                 >
-                  <FontAwesomeIcon icon={faHeart} className='text-gray-400' />
+                  <FontAwesomeIcon icon={whishList ? faHeartSolid : faHeartRegular} className={`${whishList? 'text-red-500' : 'text-gray-500'}`} />
                 </button>
                 <button
                   className="w-10 h-10 bg-gray-900/80 hover:bg-red-600 text-gray-200 hover:text-white border border-gray-700 rounded-full flex items-center justify-center transition-colors"

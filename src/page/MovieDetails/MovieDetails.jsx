@@ -2,14 +2,21 @@ import { data, useParams } from 'react-router'
 import '../MovieDetails/MovieDetails.css'
 import { useEffect, useState } from 'react'
 import Loading from '../../components/Loading/Loading'
-import { faArrowRight, faArrowUp, faBuilding, faCalendar, faCircle, faCircleCheck, faCircleInfo, faClock, faGlobe, faLink, faLocationDot, faPlay, faQuoteLeft, faShareNodes, faSquarePollVertical, faStairs, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faArrowUp, faBuilding, faCalendar, faCircleCheck, faCircleInfo, faClock, faGlobe, faLink, faLocationDot, faPlay, faQuoteLeft, faShareNodes, faSquarePollVertical,faStar,faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFontAwesome, faHeart } from '@fortawesome/free-regular-svg-icons'
+import { faFontAwesome, faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 import { faBookmark } from '@fortawesome/free-regular-svg-icons/faBookmark'
 export default function MovieDetails() {
   const { id } = useParams()
   const [movieDetails, setMovieDetails] = useState(null)
   const [trailerKey, setTrailerKey] = useState(null);
+  const [isWishlist, setIsWishlist] = useState(() => {
+    const saved = localStorage.getItem(`movie_wishlist_${String(id)}`);
+    return saved ? JSON.parse(saved) : false;
+  });
+  useEffect(() => {
+    localStorage.setItem(`movie_wishlist_${id}`, JSON.stringify(isWishlist));
+  }, [isWishlist, id]);
   async function getMovieDetails() {
     const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=ac7e5c509c05c95a09ccc13bb434f9f4`)
     const data = await response.json()
@@ -24,6 +31,7 @@ export default function MovieDetails() {
   const trailer = trailerKey?.find(
   (video) => video.site === "YouTube" && video.type === "Trailer"
 );
+
 
   useEffect(() => { getMovieDetails(), trailerVideo() }, [])
   return (
@@ -138,8 +146,10 @@ export default function MovieDetails() {
                       <FontAwesomeIcon icon={faPlay} className='mr-1 text-white text-sm' />
                       Watch Trailer
                     </a>}
-                    <button className="bg-gray-900 cursor-pointer hover:bg-gray-800 text-gray-200 border border-gray-700 px-4 py-2.5 rounded-xl font-medium flex items-center transition-colors">
-                      <FontAwesomeIcon icon={faHeart} className='mr-1 text-gray-400' />
+                    <button
+                    onClick={()=>{setIsWishlist(!isWishlist)}}
+                    className="bg-gray-900 cursor-pointer hover:bg-gray-800 text-gray-200 border border-gray-700 px-4 py-2.5 rounded-xl font-medium flex items-center transition-colors">
+                      <FontAwesomeIcon icon={isWishlist ? faHeartSolid : faHeartRegular} className={`${isWishlist? 'text-red-500' : 'text-gray-500'} mr-1 mt-1`} />
                       Favorites
                     </button>
                     <button className="w-11 h-11 bg-gray-900 hover:bg-gray-800 text-gray-200 border border-gray-700 rounded-xl flex items-center justify-center transition-colors" aria-label="Add to watchlist">
