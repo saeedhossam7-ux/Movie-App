@@ -1,11 +1,32 @@
 import { faFacebookF, faGoogle, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
-
-  function handleSubmit(){
+  const [email,setEmail] = useState('')
+  const [password,setPassword] = useState('')
+  const navigate = useNavigate()
+  async function handleSubmit(e){
+    e.preventDefault()
+    const response = await fetch(`https://ecommerce.routemisr.com/api/v1/auth/signin`,{
+method:'POST',
+      headers:{
+'Content-Type':'application/json'
+      },
+     body:JSON.stringify({email,password})
+    })
+    const data = await response.json()
+    console.log(data);
+    
+    if(data.message === 'success'){
+      toast.success('login successfully')
+      setTimeout(()=>{navigate('/')},4000)
+    }else{
+      toast.error(data.message || 'Something went wrong')
+    }
 
   }
   return (
@@ -33,6 +54,8 @@ export default function LoginPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="loginEmail"
           placeholder="Enter your email"
+          value={email}
+          onChange={(e)=>setEmail(e.target.value)}
         />
         <label 
           htmlFor="loginEmail" 
@@ -50,6 +73,8 @@ export default function LoginPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="loginPassword"
           placeholder="Enter your password"
+          value={password}
+          onChange={(e)=>setPassword(e.target.value)}
         />
         <label 
           htmlFor="loginPassword" 

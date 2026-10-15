@@ -7,6 +7,7 @@ import HomePage from "./page/HomePage/HomePage";
 import SinupPage from "./page/SinupPage/SinupPage";
 import NotFound from "./page/NotFound/NotFound";
 import MovieDetails from "./page/MovieDetails/MovieDetails";
+import { Bounce, ToastContainer } from "react-toastify";
 
 export default function App() {
   return <>
@@ -21,5 +22,18 @@ export default function App() {
       </Routes>
     <Footer />
     </BrowserRouter>
+    <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="colored"
+transition={Bounce}
+/>
   </>
 }

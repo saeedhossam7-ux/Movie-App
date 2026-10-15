@@ -1,13 +1,37 @@
 
-import { faFacebook, faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
 export default function SinupPage() {
-
-  function handleSubmit(e){
+  const [name,setName] = useState('')
+  const [email,setEmail] = useState('')
+  const [phone,setPhone] = useState('')
+  const [password,setPassword] = useState('')
+  const [rePassword,setRePassword] = useState('')
+  const navigate = useNavigate()
+  async function handleSubmit(e){
     e.preventDefault()
+    const response = await fetch(`https://ecommerce.routemisr.com/api/v1/auth/signup`,{
+      method: 'POST',
+      headers:{
+'Content-Type':'application/json'
+      },
+     body:JSON.stringify({name,email,phone,password,rePassword})
+    })
+    const data = await response.json()
+    
+    if(data.message === 'success'){
+      toast.success('Account created successfully')
+      setTimeout(()=>{navigate('/login')},4000)
+    }else{
+      toast.error(data.message || 'Something went wrong')
+    }
+
   }
+
   return (
 <div className="min-h-screen bg-gray-900 text-white flex justify-center items-center py-12 px-4 mt-10">
   <div className="w-full max-w-md bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
@@ -33,10 +57,10 @@ export default function SinupPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="nameInput"
           placeholder="Enter your name"
-/*          value={name}
+         value={name}
           onChange={(e) => {
-            setName(e.target.value); // & name => 'R'
-          }} */
+            setName(e.target.value);
+          }}
         />
         <label 
           htmlFor="nameInput" 
@@ -54,10 +78,10 @@ export default function SinupPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="emailInput"
           placeholder="Enter your email"
-/*          value={email}
+         value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-          }} */
+          }}
         />
         <label 
           htmlFor="emailInput" 
@@ -75,10 +99,10 @@ export default function SinupPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="phoneInput"
           placeholder="Enter your phone"
-/*          value={phone}
+         value={phone}
           onChange={(e) => {
             setPhone(e.target.value);
-          }} */
+          }}
         />
         <label 
           htmlFor="phoneInput" 
@@ -96,10 +120,10 @@ export default function SinupPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="passwordInput"
           placeholder="Enter your password"
-/*          value={password}
+         value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-          }} */
+          }}
         />
         <label 
           htmlFor="passwordInput" 
@@ -117,10 +141,10 @@ export default function SinupPage() {
           className="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-red-600 peer"
           id="confirmPasswordInput"
           placeholder="Confirm your password"
-/*          value={rePassword}
+         value={rePassword}
           onChange={(e) => {
             setRePassword(e.target.value);
-          }} */
+          }}
         />
         <label 
           htmlFor="confirmPasswordInput" 
